@@ -1,15 +1,27 @@
+import DIRECTION from './direction.js';
+
 class paddle {
     color;
     height;
     width;
+    speed;
     xPos;
     yPos;
 
     constructor (canvasWidth, canvasHeight) {
         this.color = 'rgb(255, 255, 255)';
         this.height = canvasHeight * .1; // 10% of view height
+        this.speed = 5; // TODO: make responsive later
         this.width = canvasWidth * .01; // 1% of view width
         this.yPos = (canvasHeight / 2) - (this.height / 2);
+    }
+
+    move (direction) {
+        if(direction === DIRECTION.UP) {
+            this.yPos -= this.speed;
+        } else if (direction === DIRECTION.DOWN) {
+            this.yPos += this.speed;
+        }
     }
 }
 

@@ -1,4 +1,5 @@
 import ball from '../model/ball.js';
+import DIRECTION from '../model/direction.js';
 import net from '../model/net.js';
 import { leftPaddle, rightPaddle } from '../model/paddle.js';
 
@@ -23,10 +24,36 @@ export default class pong {
         this.leftPaddle = new leftPaddle(viewWidth, viewHeight);
         this.rightPaddle = new rightPaddle(viewWidth, viewHeight);
     
+        this.draw();
+        this.loop();
+    }
+
+    isGameStopped () {
+        return false;
+    }
+
+    draw () {
         this.view.draw(
             this.ball,
             this.net,
             this.leftPaddle,
             this.rightPaddle);
+    }
+
+    loop () {
+        this.update();
+        this.draw();
+
+        if (!this.isGameStopped()) {
+            window.requestAnimationFrame(() => {
+                this.loop();
+            });
+        }
+    }
+
+    update () {
+        this.ball.move();
+        this.leftPaddle.move(DIRECTION.UP);
+        this.rightPaddle.move(DIRECTION.DOWN);
     }
 }

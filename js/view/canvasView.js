@@ -1,11 +1,51 @@
+import DIRECTION from '../model/direction.js';
+
 export default class canvasView {
     HEIGHT = 400;
     WIDTH = 800;
 
     canvas;
+    pong;
 
-    constructor () {
+    constructor (pong) {
         this.canvas = document.getElementById('pongCanvas');
+        this.pong = pong;
+
+        this.addEventListeners();
+    }
+
+    addEventListeners () {
+        // Left Player will use 'w' for UP and 's' for DOWN
+        const LEFT_PLAYER_UP = 87;
+        const LEFT_PLAYER_DOWN = 83; 
+
+        // Right Player will use 'up arrow' for UP and 'down arrow' for DOWN
+        const RIGHT_PLAYER_UP = 38;
+        const RIGHT_PLAYER_DOWN = 40;
+
+        window.addEventListener("keydown", (e) => {
+            if(e.keyCode === LEFT_PLAYER_UP) {
+                this.pong.setLeftPaddleDirection(DIRECTION.UP);
+            } 
+            else if (e.keyCode === LEFT_PLAYER_DOWN) {
+                this.pong.setLeftPaddleDirection(DIRECTION.DOWN);
+            }
+            else if(e.keyCode === RIGHT_PLAYER_UP) {
+                this.pong.setRightPaddleDirection(DIRECTION.UP);
+            } 
+            else if (e.keyCode === RIGHT_PLAYER_DOWN) {
+                this.pong.setRightPaddleDirection(DIRECTION.DOWN);
+            }
+        });
+
+        window.addEventListener("keyup", (e) => {
+            if(e.keyCode === LEFT_PLAYER_UP || e.keyCode === LEFT_PLAYER_DOWN) {
+                this.pong.setLeftPaddleDirection(DIRECTION.NONE);
+            }
+            else if(e.keyCode === RIGHT_PLAYER_UP || e.keyCode === RIGHT_PLAYER_DOWN) {
+                this.pong.setRightPaddleDirection(DIRECTION.NONE);
+            }
+        });
     }
 
     getHeight () {

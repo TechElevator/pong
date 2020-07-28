@@ -55,6 +55,18 @@ export default class pong {
         this.ball.move();
         this.leftPaddle.move();
         this.rightPaddle.move();
+
+        if (this.didBallCollideWithBoundary(this.ball, this.view.getHeight(), 0)) {
+            this.ball.reverseY();
+        } 
+    }
+
+    didBallCollideWithBoundary (ball, lowerBoundaryYPos, upperBoundaryYPos) {
+        const ballYPos = ball.getYPos();
+        const ballRadius = ball.getRadius();
+
+        return (ballYPos + ballRadius) >= lowerBoundaryYPos 
+            || (ballYPos - ballRadius) <= upperBoundaryYPos;
     }
 
     setLeftPaddleDirection (direction) {

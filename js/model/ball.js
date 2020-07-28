@@ -29,4 +29,16 @@ export default class ball {
         this.xPos += this.dx;
         this.yPos += this.dy;
     }
+
+    reverseY () {
+        this.dy *= -1;
+    }
+
+    getRadius () {
+        return this.radius;
+    }
+
+    getYPos () {
+        return this.yPos;
+    }
 }

@@ -59,14 +59,32 @@ export default class pong {
         if (this.didBallCollideWithBoundary(this.ball, this.view.getHeight(), 0)) {
             this.ball.reverseY();
         } 
+
+        if (this.didLeftPaddleHitBall(this.ball, this.leftPaddle)
+         || this.didRightPaddleHitBall(this.ball, this.rightPaddle)) {
+            this.ball.reverseX();
+        }
     }
 
     didBallCollideWithBoundary (ball, lowerBoundaryYPos, upperBoundaryYPos) {
-        const ballYPos = ball.getYPos();
-        const ballRadius = ball.getRadius();
+        return ball.getBottomEdge() >= lowerBoundaryYPos 
+            || ball.getTopEdge() <= upperBoundaryYPos;
+    }
 
-        return (ballYPos + ballRadius) >= lowerBoundaryYPos 
-            || (ballYPos - ballRadius) <= upperBoundaryYPos;
+    didLeftPaddleHitBall (ball, paddle) {
+        return ball.getDX() < 0
+            && ball.getLeftEdge() >= paddle.getLeftEdge()
+            && ball.getLeftEdge() <= paddle.getRightEdge()
+            && ball.getYPos() >= paddle.getTopEdge()
+            && ball.getYPos() <= paddle.getBottomEdge();
+    }
+
+    didRightPaddleHitBall (ball, paddle) {
+        return ball.getDX() > 0     
+            && ball.getRightEdge() >= paddle.getLeftEdge()
+            && ball.getRightEdge() <= paddle.getRightEdge()
+            && ball.getYPos() >= paddle.getTopEdge()
+            && ball.getYPos() <= paddle.getBottomEdge();
     }
 
     setLeftPaddleDirection (direction) {

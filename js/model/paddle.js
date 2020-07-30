@@ -20,6 +20,22 @@ class paddle {
         this.yPos = (canvasHeight / 2) - (this.height / 2);
     }
 
+    getLeftEdge () {
+        return this.xPos;
+    }
+
+    getRightEdge () {
+        return this.xPos + this.width;
+    }
+
+    getTopEdge () {
+        return this.yPos;
+    }
+
+    getBottomEdge () {
+        return this.yPos + this.height;
+    }
+
     move () {
         const topEdgePos = 0;
         const bottomEdgePos = this.canvasHeight;

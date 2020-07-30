@@ -30,8 +30,16 @@ export default class ball {
         this.yPos += this.dy;
     }
 
+    reverseX () {
+        this.dx *= -1;
+    }
+
     reverseY () {
         this.dy *= -1;
+    }
+
+    getDX () {
+        return this.dx;
     }
 
     getRadius () {
@@ -40,5 +48,21 @@ export default class ball {
 
     getYPos () {
         return this.yPos;
+    }
+
+    getLeftEdge () {
+        return this.xPos - this.radius;
+    }
+
+    getRightEdge () {
+        return this.xPos + this.radius;
+    }
+
+    getTopEdge () {
+        return this.yPos - this.radius;
+    }
+
+    getBottomEdge () {
+        return this.yPos + this.radius;
     }
 }

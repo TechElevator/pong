@@ -4,8 +4,10 @@ import { leftPaddle, rightPaddle } from '../model/paddle.js';
 
 import canvasView from '../view/canvasView.js';
 import player from '../model/player.js';
+import pongAudio from '../model/pongAudio.js';
 
 export default class pong {
+    audio;
     WINNING_SCORE = 3;
     ball;
     net;
@@ -19,6 +21,7 @@ export default class pong {
     isGamePaused;
 
     constructor () {
+        this.audio = new pongAudio();
         this.view = new canvasView(this);
         
         const viewWidth = this.view.getWidth();
@@ -85,22 +88,34 @@ export default class pong {
         this.rightPaddle.move();
 
         if (this.didBallCollideWithBoundary(this.ball, this.view.getHeight(), 0)) {
+            this.audio.playHitBoundarySound();
             this.ball.reverseY();
         } 
         else if(this.didLeftPlayerScore(this.ball, this.view.getWidth())) {
             this.pauseGame();
             this.leftPlayer.incrementScore();
+            if(this.isGameOver()) {
+                this.audio.playGameOverSound();
+            } else {
+                this.audio.playScoreSound();
+            }
             this.ball.reset();
             this.ball.reverseX();
         }
         else if(this.didRightPlayerScore(this.ball, 0)) {
             this.pauseGame();
             this.rightPlayer.incrementScore();
+            if(this.isGameOver()) {
+                this.audio.playGameOverSound();
+            } else {
+                this.audio.playScoreSound();
+            }
             this.ball.reset();
             this.ball.reverseX();
         }
         else if (this.didLeftPaddleHitBall(this.ball, this.leftPaddle)
          || this.didRightPaddleHitBall(this.ball, this.rightPaddle)) {
+            this.audio.playHitPaddleSound();
             this.ball.reverseX();
         }
     }

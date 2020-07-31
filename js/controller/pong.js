@@ -1,17 +1,22 @@
 import ball from '../model/ball.js';
-import DIRECTION from '../model/direction.js';
 import net from '../model/net.js';
 import { leftPaddle, rightPaddle } from '../model/paddle.js';
 
 import canvasView from '../view/canvasView.js';
+import player from '../model/player.js';
 
 export default class pong {
+    WINNING_SCORE = 3;
     ball;
     net;
     leftPaddle;
     rightPaddle;
+    leftPlayer;
+    rightPlayer;
 
     view;
+
+    isGamePaused;
 
     constructor () {
         this.view = new canvasView(this);
@@ -23,21 +28,27 @@ export default class pong {
         this.net = new net(viewWidth, viewHeight);
         this.leftPaddle = new leftPaddle(viewWidth, viewHeight);
         this.rightPaddle = new rightPaddle(viewWidth, viewHeight);
-    
+        this.leftPlayer = new player(this.leftPaddle, this.WINNING_SCORE);
+        this.rightPlayer = new player(this.rightPaddle, this.WINNING_SCORE);
+
+        this.pauseGame();
         this.draw();
-        this.loop();
+    }
+
+    isGameOver () {
+        return this.leftPlayer.hasWon() || this.rightPlayer.hasWon();
     }
 
     isGameStopped () {
-        return false;
+        return this.isGamePaused || this.isGameOver();
     }
 
     draw () {
         this.view.draw(
             this.ball,
             this.net,
-            this.leftPaddle,
-            this.rightPaddle);
+            this.leftPlayer,
+            this.rightPlayer);
     }
 
     loop () {
@@ -51,6 +62,23 @@ export default class pong {
         }
     }
 
+    pauseGame () {
+        this.isGamePaused = true;
+    }
+
+    unpauseGame () {
+        if(this.isGameOver()) {
+            this.isGamePaused = false;
+            this.leftPlayer.resetScore();
+            this.rightPlayer.resetScore();
+            this.loop();
+        }
+        else if(this.isGamePaused) {
+            this.isGamePaused = false;
+            this.loop();
+        }  
+    }
+
     update () {
         this.ball.move();
         this.leftPaddle.move();
@@ -59,8 +87,19 @@ export default class pong {
         if (this.didBallCollideWithBoundary(this.ball, this.view.getHeight(), 0)) {
             this.ball.reverseY();
         } 
-
-        if (this.didLeftPaddleHitBall(this.ball, this.leftPaddle)
+        else if(this.didLeftPlayerScore(this.ball, this.view.getWidth())) {
+            this.pauseGame();
+            this.leftPlayer.incrementScore();
+            this.ball.reset();
+            this.ball.reverseX();
+        }
+        else if(this.didRightPlayerScore(this.ball, 0)) {
+            this.pauseGame();
+            this.rightPlayer.incrementScore();
+            this.ball.reset();
+            this.ball.reverseX();
+        }
+        else if (this.didLeftPaddleHitBall(this.ball, this.leftPaddle)
          || this.didRightPaddleHitBall(this.ball, this.rightPaddle)) {
             this.ball.reverseX();
         }
@@ -85,6 +124,14 @@ export default class pong {
             && ball.getRightEdge() <= paddle.getRightEdge()
             && ball.getYPos() >= paddle.getTopEdge()
             && ball.getYPos() <= paddle.getBottomEdge();
+    }
+
+    didLeftPlayerScore (ball, scoreLine) {
+        return ball.getLeftEdge() >= scoreLine;
+    }
+
+    didRightPlayerScore (ball, scoreLine) {
+        return ball.getRightEdge() <= scoreLine;
     }
 
     setLeftPaddleDirection (direction) {

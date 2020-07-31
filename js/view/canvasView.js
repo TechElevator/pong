@@ -45,6 +45,8 @@ export default class canvasView {
             else if(e.keyCode === RIGHT_PLAYER_UP || e.keyCode === RIGHT_PLAYER_DOWN) {
                 this.pong.setRightPaddleDirection(DIRECTION.NONE);
             }
+
+            this.pong.unpauseGame();
         });
     }
 
@@ -61,7 +63,7 @@ export default class canvasView {
     }
 
 
-    draw (ball, net, leftPaddle, rightPaddle) {
+    draw (ball, net, leftPlayer, rightPlayer) {
         // draw the canvas
         this.drawCanvas();
 
@@ -72,10 +74,15 @@ export default class canvasView {
         this.drawNet(net);
 
         // draw the left paddle
-        this.drawPaddle(leftPaddle);
+        this.drawPaddle(leftPlayer.paddle);
 
         // draw the right paddle
-        this.drawPaddle(rightPaddle);
+        this.drawPaddle(rightPlayer.paddle);
+
+        // draw the player scores
+        this.drawScore(leftPlayer.score, rightPlayer.score);
+
+        this.drawWinner(leftPlayer.hasWon(), rightPlayer.hasWon());
     }
 
     drawCanvas () {
@@ -112,5 +119,41 @@ export default class canvasView {
 
         ctx.fillStyle = paddle.color;
         ctx.fillRect(paddle.xPos, paddle.yPos, paddle.width, paddle.height);
+    }
+
+    drawScore (player1Score, player2Score) {
+        const fontSize = this.getHeight() * .1; // 10% of the canvas height
+        if (fontSize < 12) {
+            fontSize = 12; // minimum font size
+        }
+
+        const ctx = this.getContext();
+        ctx.fillStyle = "rgb(255, 255, 255)";
+        ctx.font = fontSize + "px Courier New";
+        ctx.textAlign = "center";
+
+        ctx.fillText(player1Score, (this.getWidth() / 2) - (fontSize * 2), (fontSize * 2));
+        ctx.fillText(player2Score, (this.getWidth() / 2) + (fontSize * 2), (fontSize * 2));
+    }
+
+    drawWinner (leftPlayerWon, rightPlayerWon) {
+        if (!leftPlayerWon && !rightPlayerWon) return;
+
+        const fontSize = this.getHeight() * .1; // 10% of the canvas height
+        if (fontSize < 12) {
+            fontSize = 12; // minimum font size
+        }
+
+        const ctx = this.getContext();
+        ctx.fillStyle = "rgb(255, 255, 255)";
+        ctx.font = fontSize + "px Courier New";
+        ctx.textAlign = "center";
+
+        if (leftPlayerWon) {
+            ctx.fillText("Left Player Wins!", (this.getWidth() / 2), (fontSize));
+
+        } else if (rightPlayerWon) {
+            ctx.fillText("Right Player Wins!", (this.getWidth() / 2), (fontSize ));
+        }
     }
 }

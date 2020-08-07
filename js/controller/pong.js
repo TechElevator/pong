@@ -92,26 +92,10 @@ export default class pong {
             this.ball.reverseY();
         } 
         else if(this.didLeftPlayerScore(this.ball, this.view.getWidth())) {
-            this.pauseGame();
-            this.leftPlayer.incrementScore();
-            if(this.isGameOver()) {
-                this.audio.playGameOverSound();
-            } else {
-                this.audio.playScoreSound();
-            }
-            this.ball.reset();
-            this.ball.reverseX();
+            this.#playerScored(this.leftPlayer);
         }
         else if(this.didRightPlayerScore(this.ball, 0)) {
-            this.pauseGame();
-            this.rightPlayer.incrementScore();
-            if(this.isGameOver()) {
-                this.audio.playGameOverSound();
-            } else {
-                this.audio.playScoreSound();
-            }
-            this.ball.reset();
-            this.ball.reverseX();
+            this.#playerScored(this.rightPlayer);
         }
         else if (this.didLeftPaddleHitBall(this.ball, this.leftPaddle)
          || this.didRightPaddleHitBall(this.ball, this.rightPaddle)) {
@@ -147,6 +131,22 @@ export default class pong {
 
     didRightPlayerScore (ball, scoreLine) {
         return ball.getRightEdge() <= scoreLine;
+    }
+
+    #playerScored (player) {
+        this.pauseGame();
+        player.incrementScore();
+        if(this.isGameOver()) {
+            this.audio.playGameOverSound();
+            this.ball.resetSpeed();
+        } else {
+            this.audio.playScoreSound();
+            this.ball.incrementSpeed();
+        }
+        this.ball.reset();
+        this.ball.reverseX();
+        this.leftPaddle.reset();
+        this.rightPaddle.reset();
     }
 
     setLeftPaddleDirection (direction) {

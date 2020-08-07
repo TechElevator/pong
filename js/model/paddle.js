@@ -17,7 +17,8 @@ class paddle {
         this.height = canvasHeight * .1; // 10% of view height
         this.speed = 8; // TODO: make responsive later
         this.width = canvasWidth * .01; // 1% of view width
-        this.yPos = (canvasHeight / 2) - (this.height / 2);
+        
+        this.reset();
     }
 
     getLeftEdge () {
@@ -59,6 +60,10 @@ class paddle {
         }
     }
 
+    reset () {
+        this.yPos = (this.canvasHeight / 2) - (this.height / 2);
+    }
+
     setDirection (direction) {
         this.direction = direction;
     }
@@ -67,13 +72,28 @@ class paddle {
 export class leftPaddle extends paddle {
     constructor (canvasWidth, canvasHeight) {
         super(canvasWidth, canvasHeight);
+        
+        this.reset();
+    }
+
+    reset () {
         this.xPos = 0 + (5 * this.width);
+        super.reset();
     }
 }
 
 export class rightPaddle extends paddle {
+    canvasWidth;
+
     constructor (canvasWidth, canvasHeight) {
         super(canvasWidth, canvasHeight);
-        this.xPos = canvasWidth - (6 * this.width);
+
+        this.canvasWidth = canvasWidth;
+        this.reset();
+    }
+
+    reset () {
+        this.xPos = this.canvasWidth - (6 * this.width);
+        super.reset();
     }
 }
